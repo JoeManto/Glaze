@@ -1,0 +1,81 @@
+
+function onRun(context) {
+
+   var doc = context.document;
+   var selectedLayers = context.selection;
+   var selectedCount  = selectedLayers.count();
+   var firstLayer     = selectedLayers.firstObject();
+
+   var alert;
+   var options;
+
+   var gap;
+
+   if (selectedCount == 0) {
+   doc.displayMessage('No layers selected');
+   } else {
+      alert = makeAlert();
+      options  = handleAlertResponse(alert, alert.runModal());
+      if(options != null){
+           gap = NSStringToNSNumber(options.gap);
+           addDataForSelectedLayers();
+           layoutSelectedLayers();
+       }
+   }
+
+   function layoutSelectedLayers(){
+       var layer;
+       for(var i = 1;i<=selectedCount-1;i++){
+           layer = selectedLayers[i];
+           layer.frame().setY((selectedLayers[i-1].frame().y())+(selectedLayers[i-1].frame().height())+gap);
+       }
+   }
+
+ function addDataForSelectedLayers(){
+    var data = [NSMutableArray arrayWithArray:selectedLayers];
+    var temp = 0;
+    for(var i = 1;i<=[data count]-1;i++){
+        for(var z = i;z>0;z--){
+            if(data[z].frame().y()<data[z-1].frame().y()){
+                temp = data[z];
+                data[z] = data[z-1];
+                data[z-1] = temp;
+            }
+        }
+    }
+       selectedLayers = data;
+   }
+
+function NSStringToNSNumber(string){
+   var nsString = [NSString stringWithFormat:@"%@",string];
+   var f = [[NSNumberFormatter alloc] init];
+   f.numberStyle = NSNumberFormatterDecimalStyle;
+   var myNumber = [f numberFromString:[NSString stringWithFormat:@"%@",nsString]];
+   if(myNumber != null){
+       myNumber = [myNumber intValue];
+       return myNumber;
+   }else{
+       return -1;
+   }
+ };
+
+function makeAlert(){
+   var alert = COSAlertWindow.new();
+   alert.setMessageText('Glaze');
+   alert.setInformativeText('Set the gap for the layers!');
+   alert.addTextFieldWithValue('50');
+   alert.addButtonWithTitle('Ok');
+   alert.addButtonWithTitle('Cancel');
+   return alert;
+};
+
+function handleAlertResponse(alert, code) {
+ if (code == "1000") {
+     return {
+       gap : alert.viewAtIndex(0).stringValue(),
+     };
+  }
+  return null;
+};
+
+};

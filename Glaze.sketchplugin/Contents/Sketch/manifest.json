@@ -1,0 +1,17 @@
+{
+    "name" : "Glaze",
+    "identifier" : "com.joemanto.sheetie",
+    "version" : "1.0.0",
+    "description" : "layout layers in a grid like form",
+    "authorEmail" : "Joemanto123@gmail.com",
+    "author" : "Joe Manto",
+    "commands" : [
+    {
+      "script" : "script.cocoascript",
+      "handler" : "onRun",
+      "shortcut" : "command shift b",
+      "name" : "Grid-Layers",
+      "identifier" : "grid"
+    }
+  ]
+}
